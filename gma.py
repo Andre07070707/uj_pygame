@@ -5,7 +5,7 @@ from pygame.locals import *
 from pygame import mixer
 
 pygame.init()
-
+#configuracao da tela e das cores 
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Basketball Game")
@@ -16,20 +16,27 @@ red = pygame.Color('red')
 blue = pygame.Color('blue')
 green = pygame.Color('green')
 orange = pygame.Color('orange')
+
+#configuracao do player e da bola
 player_width, player_height = 150, 210  
 ball_radius = 15
 player_pos = pygame.Vector2(width // 2, height - player_height)
 ball_pos = pygame.Vector2(player_pos.x + player_width // 2, player_pos.y - ball_radius * 2)
 ball_speed = pygame.Vector2(0, 0)
 ball_in_motion = False
+
+#inserir as imagens
 campo = pygame.image.load("campo2.jpg").convert_alpha()
 player_image = pygame.image.load('craque2.png').convert_alpha()
 player_image = pygame.transform.scale(player_image, (player_width, player_height))
 
-basket_width, basket_height = 105, 27
+#connfiguracoes do cesto 
+basket_width, basket_height = 112, 30
 basket_pos = pygame.Rect(width // 2 - basket_width // 2, 50, basket_width, basket_height)
 basket_speed = 5
 basket_direction = 1  
+
+#carregar a imagem do menu e configuracoes do lancamento da bolae mais
 menuimage = pygame.image.load('campo3.jpg').convert_alpha()
 clock = pygame.time.Clock()
 running = True
@@ -44,11 +51,12 @@ game_state = "menu"
 
 font = pygame.font.SysFont(None, 36)
 
+#musica ed fundo
 mixer.init()
 mixer.music.load('basket.mp3')
 mixer.music.play()
 
-
+#funcao para desenhar os elementos da tela
 def draw():
     screen.fill(white)
     screen.blit(campo , (0 , 0))
@@ -61,6 +69,7 @@ def draw():
     draw_lives()
     pygame.display.flip()
 
+#funcao para desenhar o menu
 def draw_menu():
     cnt = True
     while cnt:
@@ -78,14 +87,12 @@ def draw_menu():
         if keys[pygame.K_SPACE]:
             cnt = False
         clock.tick(60)
-
+#funcao para desenhar as vidas erstantes ao player
 def draw_lives():
     score_text = font.render(f"Lives: {lives}", True, white)
     screen.blit(score_text, (width - 150, 135))
 
-
-
-
+#funcao para desenhar a trajetoria
 def draw_trajectory():
     if not ball_in_motion:
         angle_radians = math.radians(launch_angle)
@@ -100,7 +107,7 @@ def draw_power_bar():
     bar_width = 20
     bar_x = 50
     bar_y = height - bar_height - 50
-    power_height = int((launch_speed / max_launch_speed) * bar_height)
+    power_height = int((launch_speed / max_launch_speed) * bar_height) #calcular a altura da bara de forca consoante a velocidade da bola
     pygame.draw.rect(screen, black, (bar_x, bar_y, bar_width, bar_height), 2)
     pygame.draw.rect(screen, green, (bar_x, bar_y + bar_height - power_height, bar_width, power_height))
 
@@ -135,7 +142,7 @@ def handle_input():
 def update_ball():
     global ball_in_motion, score, basket_speed, lives
     if ball_in_motion:
-        ball_speed.y += 0.5  
+        ball_speed.y += 0.5  #meio q a simular a acelaracao gravitica para ir diminuindo a velocidade da bola e basicamente criar um movimento parabolico
         ball_pos.x += ball_speed.x
         ball_pos.y += ball_speed.y
         if ball_pos.y > height:
@@ -149,7 +156,7 @@ def update_ball():
             if score %5 == 0:
                 basket_speed +=3
     
-                
+                #acima e basicamente o aumento da velocidade do cesto consoante o score
 def update_basket():
     global basket_pos, basket_direction, basket_speed, width
     basket_pos.x += basket_direction * basket_speed
